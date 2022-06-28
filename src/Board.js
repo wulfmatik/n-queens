@@ -78,13 +78,53 @@
     // --------------------------------------------------------------
     //
     // test if a specific row on this board contains a conflict
+
+    //arr = [[1,0,0],[0,1,0],[0,0,1]]
+    //arr[rowIndex][colIndex] ==> specific location in the board
+    //board is an object:
+    // keys = rows (int)
+    // values = array
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      var currMatrix = this.attributes;
+
+      if (currMatrix.n === 0) {
+        return false;
+      }
+
+      var counter = 0;
+
+      // iterate through each row
+      for (var i = 0; i < currMatrix[rowIndex].length; i++) {
+        counter += currMatrix[rowIndex][i];
+      }
+
+      if (counter <= 1) {
+        return false;
+      } else {
+        return true;
+      }
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      return false; // fixme
+      var currMatrix = this.attributes;
+
+      if (currMatrix.n === 0) {
+        return false;
+      }
+
+      for (var key in currMatrix) {
+        var counter = 0;
+
+        for (var i = 0; i < currMatrix.n; i++) {
+          counter += currMatrix[key][i];
+          if (counter > 1) {
+            return true;
+          }
+        }
+      }
+
+      return false;
     },
 
 
@@ -94,12 +134,42 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      var currMatrix = this.attributes;
+      var counter = 0;
+
+      if (currMatrix.n === 0) {
+        return false;
+      }
+
+      for (var key in currMatrix) {
+        counter += currMatrix[key][colIndex];
+        if (counter > 1) {
+          return true;
+        }
+      }
+      return false;
     },
 
     // test if any columns on this board contain conflicts
+    // scenario for empty board
     hasAnyColConflicts: function() {
-      return false; // fixme
+      var currMatrix = this.attributes; // empty board
+      console.log(currMatrix)
+      console.log('n: ', currMatrix.n)
+      if (currMatrix.n === 0) { //n = 4 --> skip
+        return false;
+      }
+
+      for (var i = 0; i < currMatrix.n; i++) {
+        var counter = 0;
+        for (var key in currMatrix) {
+          counter += currMatrix[key][i];
+          if (counter > 1) {
+            return true;
+          }
+        }
+      }
+      return false;
     },
 
 
