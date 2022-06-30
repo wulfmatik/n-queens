@@ -153,10 +153,9 @@
     // test if any columns on this board contain conflicts
     // scenario for empty board
     hasAnyColConflicts: function() {
-      var currMatrix = this.attributes; // empty board
-      console.log(currMatrix)
-      console.log('n: ', currMatrix.n)
-      if (currMatrix.n === 0) { //n = 4 --> skip
+      var currMatrix = this.attributes;
+
+      if (currMatrix.n === 0) {
         return false;
       }
 
@@ -178,13 +177,58 @@
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
+    // does this only test for diagonals to the right of main (i==j)
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var colIndex = majorDiagonalColumnIndexAtFirstRow;
+      var currMatrix = this.attributes;
+      var counter = 0;
+
+      if (currMatrix.n === 0) {
+        return false;
+      }
+
+      for (var key in currMatrix) {
+        for (var i = 0; i < currMatrix.n; i++) {
+          if (Math.abs(key - i) === colIndex && (key - i) <= 0) {
+            counter += currMaxtrix[key][colIndex];
+            if (counter > 1) {
+              return true;
+            }
+          }
+          //if (mainDiagnal) {} // key - i === 0
+          //if(subDiagnal1) {} // key - i === -1
+          //if(subDiagnal2) {} // key - i === -2
+          //...
+          //if(subDiagonalN) {} // abs(key - i) === n - 2
+          //for(var i = 0; var i <= n-2; i++)  // n=6 --> i=0,1,2,3,4
+          //if(abs(key - colIndex )
+          var currMatrix = this.attributes;
+        }
+      }
+      return false;
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      return false; // fixme
+      var currMatrix = this.attributes;
+      console.log(currMatrix);
+      for (var k = 0; k <= 2 * (currMatrix.n - 1); ++k) {
+        var counter = 0;
+        var temp = [];
+        for (var y = currMatrix.n - 1; y >= 0; --y) {
+          var x = k - (currMatrix.n - y);
+          if (x >= 0 && x < currMatrix.n) {
+            temp.push(currMatrix[y][x]);
+          }
+        }
+        for (var i = 0; i < temp.length; i++) {
+          counter += temp[i];
+          if (counter > 1) {
+            return true;
+          }
+        }
+      }
+      return false;
     },
 
 
@@ -193,13 +237,101 @@
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
+
+    // 00 01 02 03  <-- 0, 1, 2, 3 Possible Inputs
+    // 10 11 12 13
+    // 20 21 22 23
+    // 30 31 32 33
+
+
+    // 00 01 02 *03  <-- Input = 3
+    // 10 11 *12 13
+    // 20 *21 22 23
+    // *30 31 32 33
+    // 03, 12, 21, 30
+    // i++, j--
+
+
+    // 10 *11 12 13
+    // 00 01 *02 03  <-- Input = 2
+    // *20 21 22 23
+    // 30 31 32 33
+    // 02, 11, 20
+    // i++, j--
+
+
+    // 00 *01 02 03  <-- Input = 1
+    // *10 11 12 13
+    // 20 21 22 23
+    // 30 31 32 33
+    // 01 10
+    // i++, j--
+
+
+    // *00 01 02 03  <-- Input = 0
+    // 10 11 12 13
+    // 20 21 22 23
+    // 30 31 32 33
+
+    // 00 01 02 *03.1  <-- Input = 3
+    // 10 11 *12.1 13
+    // 20 *21.0 22 23
+    // *30.0 31 32 33
+    // 03 (0), 12 (0), 21 (1), 30 (0)
+
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var currMatrix = this.attributes;
+      var counter = 0;
+      var j = minorDiagonalColumnIndexAtFirstRow;
+      for (var i = 0; i <= minorDiagonalColumnIndexAtFirstRow; i++) {
+        count += currMatrix[i][j];
+        j--;
+        if (counter > 1) {
+          return true;
+        }
+      }
+      return false;
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+
+      var currMatrix = this.attributes;
+      var numRows = currMatrix.n;
+      var numCols = currMatrix[0].length;
+      var row = 0;
+      var col = 0;
+
+      for (var i = 0; i < numRows + numCols - 1; i++) {
+        var counter = 0;
+
+        if (i % 2 === 0) {
+          while (row >= 0 && col < numCols) {
+            counter += currMatrix[row--][col++];
+            if (counter > 1) {
+              return true;
+            }
+          }
+          row++;
+          if (col === numCols) {
+            row++;
+            col = numCols - 1;
+          }
+        } else {
+          while (col >= 0 && row < numRows) {
+            counter += currMatrix[row++][col--];
+            if (counter > 1) {
+              return true;
+            }
+          }
+          col++;
+          if (row === numRows) {
+            row = numRows - 1;
+            col++;
+          }
+        }
+      }
+      return false;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
@@ -216,3 +348,56 @@
   };
 
 }());
+
+// n = 4
+// board = {       //index (first index = key, second index = i)  key - i <= 0 && abs(key-i) <= n-2 (2)
+//   0: [0,0,0,0], //00, 01, 02, 03
+//   1: [0,0,0,0], //10, 11, 12, 13
+//   2: [0,0,0,0], //20, 21, 22, 23
+//   3: [0,0,0,0]  //30, 31, 32, 33
+// }
+
+// i==j --> main diagonal
+// [0][n-1] --> corners
+// --> expanded to n x n matrix
+// -----> abs(i-j) === n-1
+// [n-1][0] --> corners
+// abs(i-j) === 1 || 2 --> sub diagonals // n = 4  1,2 --> n-2, n-3
+// --> expanded to n x n matrix
+// abs(i-j) === n-
+
+
+// n = 6
+
+// board = {       //index
+// input = colIndex = 0,1,2,3,4,5
+//   0: [0,0,0,0,0,0], //00, 01, 02, 03, 04, 05
+//   1: [0,0,0,0,0,0], //10, 11, 12, 13, 14, 15
+//   2: [0,0,0,0,0,0], //20, 21, 22, 23, 24, 25
+//   3: [0,0,0,0,0,0], //30, 31, 32, 33, 34, 35
+//   4: [0,0,0,0,0,0], //40, 41, 42, 43, 44, 45
+//   5: [0,0,0,0,0,0]  //50, 51, 52, 53, 54, 55
+// }
+
+// General rules:
+// abs(i-j) === n-1 //n = 6 -> 5 --> top right / bottom left corners
+// abs(i-j) <= n-2 && abs(i-j) >= 0 --> sub diagonals
+          // n = 6
+          //if (mainDiagnal) {} // key - i === 0
+          //  good
+          //if(subDiagnal1) {} // key - i === -1
+          //  good
+          //if(subDiagnal2) {} // key - i === -2
+          //  good
+          //if(subDiagonalN) {} // abs(key - i) === n - 2
+          //  diff = 4 === n-2
+
+
+
+
+
+
+
+
+
+
