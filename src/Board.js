@@ -79,20 +79,6 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      // var row = this.get('n');
-      // var counter = 0;
-
-      // if (row === 0) {
-      //   return false;
-      // }
-
-      // for (var i = 0; i < row; i++) {
-      //   counter += this.attributes[rowIndex][i];
-      //   if (counter > 1) {
-      //     return true;
-      //   }
-      // }
-      // return false;
 
       var length = this.get('n');
       var counter = 0;
@@ -201,7 +187,7 @@
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
       var currMatrix = this.attributes;
-      //console.log(currMatrix);
+
       for (var k = 0; k <= 2 * (currMatrix.n - 1); ++k) {
         var counter = 0;
         var temp = [];
