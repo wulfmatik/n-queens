@@ -67,22 +67,6 @@ describe('solvers', function() {
   });
 
   describe('countNQueensSolutions()', function() {
-    it('finds the number of valid solutions for n of 0-3', function() {
-      var expectedSolutionCount = [1, 1, 0, 0,]
-      // n=0
-      // empty board = 1
-
-      // n=1
-      // 0 ==> 1
-
-      // n=2
-      // 0 0 ==> 0
-      // 0 0
-
-      // n=3
-      // 0 0 0 ==> 4
-      // 0 0 0
-      // 0 0 0
 
     it('finds the number of valid solutions for n of 0-8', function() {
       _.range(0, 9).map(function(n) {

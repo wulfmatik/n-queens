@@ -43,92 +43,74 @@
 // 1 1
 // run hasColConflict, hasRowConflict --> if both false --> numSolution++
 
-var board = new Board({n:n})
-for i in n {
-  for j in n {
-    board[i][j] = 1;
+// var board = new Board({n:n})
+// for i in n {
+//   for j in n {
+//     board[i][j] = 1;
 
-  }
-}
+//   }
+// }
 
 //Step 1:
 //Find all combinations of n rook placement
 //Step 2:
-//For each arrangement, run hasColConflit && hasRowConflict && hadDiagConflict
+//For each arrangement, run hasColConflit && hasRowConflict && hasDiagConflict
 //Step 3:
 //If hasColConflict && hasRowConflict === false, numSolution++
 //Step 4:
 //Return numSolution
 
 window.findNRooksSolution = function(n) {
+  var board = new Board({n: n});
+  //console.log('board: ', board);
+  var solution;
 
-  var board = new Board({n});
-
-  // Function to print all
-// combinations of setting N
-// pieces in N x N board
-function allCombinations(piecesPlaced, N, row, col, ans) {
-
-  // If the total 2d array's space
-  // is exhausted then backtrack.
-  if (row == N) {
-
-    // If all the pieces are
-    // placed then print the answer.
-    if (piecesPlaced == N) {
-      document.write(ans);
+  var rookSolver = function(row) {
+    if (row === n) {
+      solution = board.attributes;
+      //console.log('solution: ', solution);
+      var solutionArray = Object.entries(solution);
+      //console.log('solutionArray: ', solutionArray);
+      return solutionArray;
     }
-    return;
-  }
-  let nr = 0;
-  let nc = 0;
 
-  // Declare one string
-  // that will set the piece.
-  let x = "";
+    for (var col = 0; col < n; col++) {
+      board.togglePiece(row, col);
+      if (!board.hasAnyRooksConflicts()) {
+        rookSolver(row + 1);
+        break;
+      }
+      board.togglePiece(row, col);
+    }
+  };
 
-  // Declare one string that
-  // will leave the space blank.
-  let y = "";
+  rookSolver(0);
 
-  // If the current column
-  // is out of bounds then
-  // increase the row
-  // and set col to 0.
-  if (col == N - 1) {
-    nr = row + 1;
-    nc = 0;
-    x = ans + "*<br>";
-    y = ans + "-<br>";
-  }
-
-  // Else increase the col
-  else {
-    nr = row;
-    nc = col + 1;
-    x = ans + "*     ";
-    y = ans + "-     ";
-  }
-
-  // Set the piece in the
-  // box and move ahead
-  allCombinations(piecesPlaced + 1, N, nr, nc, x);
-
-  // Leave the space blank
-  // and move forward
-  allCombinations(piecesPlaced, N, nr, nc, y);
-}
-  var solution =
-
-  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
 };
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var board = new Board({n: n});
+  var solutionCount = 0;
 
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
+  var rookSolver = function(row) {
+    if (row === n) {
+      solutionCount += 1;
+      return solutionCount;
+    }
+
+    for (var col = 0; col < n; col++) {
+      board.togglePiece(row, col);
+      if (!board.hasAnyRooksConflicts()) {
+        rookSolver(row + 1);
+      }
+      board.togglePiece(row, col);
+    }
+  };
+
+  rookSolver(0);
+
   return solutionCount;
 };
 
@@ -140,10 +122,29 @@ window.findNQueensSolution = function(n) {
   return solution;
 };
 
+
+
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var board = new Board({n: n});
+  var solutionCount = 0;
 
-  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
+  var queenSolver = function(row) {
+    if (row === n) {
+      solutionCount += 1;
+      return solutionCount;
+    }
+
+    for (var col = 0; col < n; col++) {
+      board.togglePiece(row, col);
+      if (!board.hasAnyQueensConflicts()) {
+        queenSolver(row + 1);
+      }
+      board.togglePiece(row, col);
+    }
+  };
+
+  queenSolver(0);
+
   return solutionCount;
 };

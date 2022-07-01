@@ -62,7 +62,7 @@
     },
 
 
-/*
+    /*
          _             _     _
      ___| |_ __ _ _ __| |_  | |__   ___ _ __ ___ _
     / __| __/ _` | '__| __| | '_ \ / _ \ '__/ _ (_)
@@ -78,71 +78,32 @@
     // --------------------------------------------------------------
     //
     // test if a specific row on this board contains a conflict
-
-    //arr = [[1,0,0],[0,1,0],[0,0,1]]
-    //arr[rowIndex][colIndex] ==> specific location in the board
-    //board is an object:
-    // keys = rows (int)
-    // values = array
     hasRowConflictAt: function(rowIndex) {
-      var currMatrix = this.attributes;
+      // var row = this.get('n');
+      // var counter = 0;
 
-      if (currMatrix.n === 0) {
-        return false;
-      }
+      // if (row === 0) {
+      //   return false;
+      // }
 
+      // for (var i = 0; i < row; i++) {
+      //   counter += this.attributes[rowIndex][i];
+      //   if (counter > 1) {
+      //     return true;
+      //   }
+      // }
+      // return false;
+
+      var length = this.get('n');
       var counter = 0;
+      var row = this.get(rowIndex); //<-- Only import the current row: array
 
-      // iterate through each row
-      for (var i = 0; i < currMatrix[rowIndex].length; i++) {
-        counter += currMatrix[rowIndex][i];
-      }
-
-      if (counter <= 1) {
-        return false;
-      } else {
-        return true;
-      }
-    },
-
-    // test if any rows on this board contain conflicts
-    hasAnyRowConflicts: function() {
-      var currMatrix = this.attributes;
-
-      if (currMatrix.n === 0) {
+      if (length === 0) {
         return false;
       }
 
-      for (var key in currMatrix) {
-        var counter = 0;
-
-        for (var i = 0; i < currMatrix.n; i++) {
-          counter += currMatrix[key][i];
-          if (counter > 1) {
-            return true;
-          }
-        }
-      }
-
-      return false;
-    },
-
-
-
-    // COLUMNS - run from top to bottom
-    // --------------------------------------------------------------
-    //
-    // test if a specific column on this board contains a conflict
-    hasColConflictAt: function(colIndex) {
-      var currMatrix = this.attributes;
-      var counter = 0;
-
-      if (currMatrix.n === 0) {
-        return false;
-      }
-
-      for (var key in currMatrix) {
-        counter += currMatrix[key][colIndex];
+      for (var i = 0; i < length; i++) {
+        counter += row[i];
         if (counter > 1) {
           return true;
         }
@@ -150,24 +111,60 @@
       return false;
     },
 
-    // test if any columns on this board contain conflicts
-    // scenario for empty board
-    hasAnyColConflicts: function() {
-      var currMatrix = this.attributes;
+    // test if any rows on this board contain conflicts
+    hasAnyRowConflicts: function() {
+      var row = this.get('n');
 
-      if (currMatrix.n === 0) {
+      if (row === 0) {
         return false;
       }
 
-      for (var i = 0; i < currMatrix.n; i++) {
-        var counter = 0;
-        for (var key in currMatrix) {
-          counter += currMatrix[key][i];
-          if (counter > 1) {
-            return true;
-          }
+      for (var i = 0; i < row; i++) {
+        if (this.hasRowConflictAt(i)) {
+          return true;
         }
       }
+      return false;
+    },
+
+
+    // COLUMNS - run from top to bottom
+    // --------------------------------------------------------------
+    //
+    // test if a specific column on this board contains a conflict
+    hasColConflictAt: function(colIndex) {
+      var col = this.get('n');
+      var counter = 0;
+
+      if (col === 0) {
+        return false;
+      }
+
+      for (var i = 0; i < col; i++) {
+        counter += this.attributes[i][colIndex];
+        if (counter > 1) {
+          return true;
+        }
+      }
+
+      return false;
+    },
+
+    // test if any columns on this board contain conflicts
+    // scenario for empty board
+    hasAnyColConflicts: function() {
+      var col = this.get('n');
+
+      if (col === 0) {
+        return false;
+      }
+
+      for (var i = 0; i < col; i++) {
+        if (this.hasColConflictAt(i)) {
+          return true;
+        }
+      }
+
       return false;
     },
 
@@ -195,13 +192,6 @@
               return true;
             }
           }
-          //if (mainDiagnal) {} // key - i === 0
-          //if(subDiagnal1) {} // key - i === -1
-          //if(subDiagnal2) {} // key - i === -2
-          //...
-          //if(subDiagonalN) {} // abs(key - i) === n - 2
-          //for(var i = 0; var i <= n-2; i++)  // n=6 --> i=0,1,2,3,4
-          //if(abs(key - colIndex )
           var currMatrix = this.attributes;
         }
       }
@@ -211,7 +201,7 @@
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
       var currMatrix = this.attributes;
-      console.log(currMatrix);
+      //console.log(currMatrix);
       for (var k = 0; k <= 2 * (currMatrix.n - 1); ++k) {
         var counter = 0;
         var temp = [];
@@ -295,7 +285,6 @@
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-
       var currMatrix = this.attributes;
       var numRows = currMatrix.n;
       var numCols = currMatrix[0].length;
@@ -382,15 +371,15 @@
 // General rules:
 // abs(i-j) === n-1 //n = 6 -> 5 --> top right / bottom left corners
 // abs(i-j) <= n-2 && abs(i-j) >= 0 --> sub diagonals
-          // n = 6
-          //if (mainDiagnal) {} // key - i === 0
-          //  good
-          //if(subDiagnal1) {} // key - i === -1
-          //  good
-          //if(subDiagnal2) {} // key - i === -2
-          //  good
-          //if(subDiagonalN) {} // abs(key - i) === n - 2
-          //  diff = 4 === n-2
+// n = 6
+//if (mainDiagnal) {} // key - i === 0
+//  good
+//if(subDiagnal1) {} // key - i === -1
+//  good
+//if(subDiagnal2) {} // key - i === -2
+//  good
+//if(subDiagonalN) {} // abs(key - i) === n - 2
+//  diff = 4 === n-2
 
 
 
