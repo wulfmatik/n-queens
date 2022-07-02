@@ -272,6 +272,9 @@
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
       var currMatrix = this.attributes;
+      if (currMatrix.n === 0) {
+        return false;
+      }
       var numRows = currMatrix.n;
       var numCols = currMatrix[0].length;
       var row = 0;

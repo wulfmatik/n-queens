@@ -58,30 +58,26 @@
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 window.findNRooksSolution = function(n) {
-  var board = new Board({n: n});
-  //console.log('board: ', board);
-  var solution;
+  var boardTest = new Board({n: n});
 
   var rookSolver = function(row) {
     if (row === n) {
-      solution = board.attributes;
-      var solutionArray = Object.entries(solution);
-      return solutionArray;
+      return boardTest.rows();
     }
 
     for (var col = 0; col < n; col++) {
-      board.togglePiece(row, col);
-      if (!board.hasAnyRooksConflicts()) {
+      boardTest.togglePiece(row, col);
+      if (!boardTest.hasAnyRooksConflicts()) {
         rookSolver(row + 1);
         break;
       }
-      board.togglePiece(row, col);
+      boardTest.togglePiece(row, col);
     }
   };
 
   rookSolver(0);
 
-  return solution;
+  return boardTest.rows();
 };
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
@@ -111,10 +107,29 @@ window.countNRooksSolutions = function(n) {
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
-  var solution = undefined; //fixme
+  var boardTest = new Board({n: n});
+  var flag = false;
 
-  console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
-  return solution;
+  var queenSolver = function(row) {
+    if (row === n) {
+      flag = true;
+      return;
+    }
+
+    for (var col = 0; col < n; col++) {
+      boardTest.togglePiece(row, col);
+      if (!boardTest.hasAnyQueensConflicts()) {
+        queenSolver(row + 1);
+        if (flag) {
+          return;
+        }
+      }
+      boardTest.togglePiece(row, col);
+    }
+  };
+  queenSolver(0);
+
+  return boardTest.rows();
 };
 
 
@@ -140,6 +155,5 @@ window.countNQueensSolutions = function(n) {
   };
 
   queenSolver(0);
-
   return solutionCount;
 };
